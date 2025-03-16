@@ -380,3 +380,188 @@ Omitted end tags for html and head
     (element
       (start_tag
         (tag_name)))))
+
+=================================
+Single quotes
+=================================
+
+<div val=''/>
+<div val='foo'></div>
+
+---
+
+(document
+    (element
+    (self_closing_tag
+        (tag_name)
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value))))
+    (element
+    (start_tag
+        (tag_name)
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value
+            (attribute_value))))
+    (end_tag
+        (tag_name))))
+
+=================================
+Double quotes
+=================================
+
+<div val=""/>
+<div val="foo"></div>
+
+---
+
+(document
+    (element
+    (self_closing_tag
+        (tag_name)
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value))))
+    (element
+    (start_tag
+        (tag_name)
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value
+            (attribute_value))))
+    (end_tag
+        (tag_name))))
+
+=================================
+Jinja {{ statements }}
+=================================
+
+{{ something }}
+<img id="img" src={{ IMG_PATH }}/>
+
+---
+(document
+    (jinja)
+    (element
+    (self_closing_tag
+        (tag_name)
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value
+            (attribute_value)))
+        (attribute
+        (attribute_name)
+        (attribute_value
+            (jinja))))))
+
+=================================
+Jinja quoted {{ statements }}
+=================================
+
+<img id="img" src="{{ IMG_PATH }}"/>
+
+---
+(document
+    (element
+    (self_closing_tag
+        (tag_name)
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value
+            (attribute_value)))
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value
+            (jinja))))))
+
+
+=================================
+Jinja {% expressions %}
+=================================
+
+{% block content %}
+<div id="container">
+    Hello, world.
+    But suddenly THIS: {% expression %} IS a jinja expression!
+    Bye, world.
+</div>
+{% endblock %}
+
+---
+
+(document
+    (jinja)
+    (element
+    (start_tag
+        (tag_name)
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value
+            (attribute_value))))
+    (text)
+    (jinja)
+    (text)
+    (end_tag
+        (tag_name)))
+    (jinja))
+
+=================================
+Jinja {# comments #}
+=================================
+
+<head>
+    {# Here's a #comment #}
+    <meta charset="UTF-{# and an inline comment in the middle of a string! #}8"/>
+</head>
+
+---
+
+(document
+    (element
+    (start_tag
+        (tag_name))
+    (jinja)
+    (element
+        (self_closing_tag
+        (tag_name)
+        (attribute
+            (attribute_name)
+            (quoted_attribute_value
+                (attribute_value)
+                (jinja)
+                (attribute_value)))))
+        (end_tag
+          (tag_name))))
+
+=================================
+Jinja errors
+=================================
+
+<div div-id="inv{id}">
+    Here is some text, but oops {% suddenly some } wild brackets appear. { Hopefully }
+    they won't {{ mess things #} up!
+</div>
+
+---
+
+(document
+    (element
+    (start_tag
+        (tag_name)
+        (attribute
+        (attribute_name)
+        (quoted_attribute_value
+            (attribute_value)
+            (ERROR
+            (UNEXPECTED '{')))))
+    (text)
+    (text)
+    (text)
+    (text)
+    (text)
+    (text)
+    (text)
+    (text)
+    (end_tag
+        (tag_name))))

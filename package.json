@@ -1,8 +1,8 @@
 {
-  "name": "tree-sitter-html",
+  "name": "tree-sitter-html-jinja",
   "version": "0.23.2",
-  "description": "HTML grammar for tree-sitter",
-  "repository": "https://github.com/tree-sitter/tree-sitter-html",
+  "description": "HTML grammar for tree-sitter, with jinja support.",
+  "repository": "https://github.com/JaagupAverin/tree-sitter-html",
   "license": "MIT",
   "author": {
     "name": "Max Brunsfeld",
@@ -16,12 +16,20 @@
     {
       "name": "Amaan Qureshi",
       "email": "amaanq12@gmail.com"
+    },
+    {
+      "name": "Jaagup Averin",
+      "email": "jaagup.averin@gmail.com"
     }
   ],
   "maintainers": [
     {
       "name": "Amaan Qureshi",
       "email": "amaanq12@gmail.com"
+    },
+    {
+      "name": "Jaagup Averin",
+      "email": "jaagup.averin@gmail.com"
     }
   ],
   "main": "bindings/node",

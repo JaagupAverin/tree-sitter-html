@@ -3,8 +3,8 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tree-sitter-html"
-description = "HTML grammar for tree-sitter"
+name = "tree-sitter-html-jinja"
+description = "HTML grammar for tree-sitter, with jinja support."
 version = "0.23.2"
 keywords = ["incremental", "parsing", "tree-sitter", "html"]
 classifiers = [
@@ -17,13 +17,14 @@ classifiers = [
 authors = [
   { name = "Max Brunsfeld", email = "maxbrunsfeld@gmail.com" },
   { name = "Amaan Qureshi", email = "amaanq12@gmail.com" },
+  { name = "Jaagup Averin", email = "jaagup.averin@gmail.com" },
 ]
 requires-python = ">=3.9"
 license.text = "MIT"
 readme = "README.md"
 
 [project.urls]
-Homepage = "https://github.com/tree-sitter/tree-sitter-html"
+Homepage = "https://github.com/JaagupAverin/tree-sitter-html"
 
 [project.optional-dependencies]
 core = ["tree-sitter~=0.22"]

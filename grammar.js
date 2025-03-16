@@ -13,6 +13,7 @@ module.exports = grammar({
 
   extras: $ => [
     $.comment,
+    $.jinja,
     /\s+/,
   ],
 
@@ -26,6 +27,7 @@ module.exports = grammar({
     $._implicit_end_tag,
     $.raw_text,
     $.comment,
+    $.jinja,
   ],
 
   rules: {
@@ -122,9 +124,12 @@ module.exports = grammar({
       )),
     ),
 
-    attribute_name: _ => /[^<>"'/=\s]+/,
+    attribute_name: _ => /[^<>{}"'/=\s]+/,
 
-    attribute_value: _ => /[^<>"'=\s]+/,
+    attribute_value: $ => choice(
+      $.jinja,
+      /[^<>{}"'=\s]+/,
+    ),
 
     // An entity can be named, numeric (decimal), or numeric (hexacecimal). The
     // longest entity name is 29 characters long, and the HTML spec says that
@@ -132,10 +137,15 @@ module.exports = grammar({
     entity: _ => /&(#([xX][0-9a-fA-F]{1,6}|[0-9]{1,5})|[A-Za-z]{1,30});?/,
 
     quoted_attribute_value: $ => choice(
-      seq('\'', optional(alias(/[^']+/, $.attribute_value)), '\''),
-      seq('"', optional(alias(/[^"]+/, $.attribute_value)), '"'),
+      seq('\'', repeat($._quoted_attribute_value_inner), '\''),
+      seq('"', repeat($._quoted_attribute_value_inner), '"'),
     ),
 
-    text: _ => /[^<>&\s]([^<>&]*[^<>&\s])?/,
+    _quoted_attribute_value_inner: $ => choice(
+      $.jinja,
+      alias(/[^<>{}"'=]+/, $.attribute_value),
+    ),
+
+    text: _ => /[^<>&\s]([^<>{}&]*)?/,
   },
 });

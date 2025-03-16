@@ -13,6 +13,7 @@ enum TokenType {
     IMPLICIT_END_TAG,
     RAW_TEXT,
     COMMENT,
+    JINJA,
 };
 
 typedef struct {
@@ -136,6 +137,36 @@ static bool scan_comment(TSLexer *lexer) {
                 dashes = 0;
         }
         advance(lexer);
+    }
+    return false;
+}
+
+static bool scan_jinja(TSLexer *lexer) {
+    char closing_char = '\0';
+    uint16_t symbol = 0;
+
+    if (lexer->lookahead == '{') {
+        closing_char = '}';
+    } else if (lexer->lookahead == '%') {
+        closing_char = '%';
+    } else if (lexer->lookahead == '#') {
+        closing_char = '#';
+    } else {
+        return false;
+    }
+
+    while (lexer->lookahead) {
+        if (lexer->lookahead == closing_char) {
+            advance(lexer);
+            if (lexer->lookahead == '}') {
+                lexer->result_symbol = JINJA;
+                advance(lexer);
+                lexer->mark_end(lexer);
+                return true;
+            }
+        } else {
+            advance(lexer);
+        }
     }
     return false;
 }
@@ -319,6 +350,15 @@ static bool scan(Scanner *scanner, TSLexer *lexer, const bool *valid_symbols) {
         case '/':
             if (valid_symbols[SELF_CLOSING_TAG_DELIMITER]) {
                 return scan_self_closing_tag_delimiter(scanner, lexer);
+            }
+            break;
+
+        case '{':
+            if (valid_symbols[JINJA]) {
+                advance(lexer);
+                if (lexer->lookahead == '{' || lexer->lookahead == '%' || lexer->lookahead == '#') {
+                    return scan_jinja(lexer);
+                }
             }
             break;
 
