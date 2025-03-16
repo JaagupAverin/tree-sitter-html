@@ -137,13 +137,18 @@ module.exports = grammar({
     entity: _ => /&(#([xX][0-9a-fA-F]{1,6}|[0-9]{1,5})|[A-Za-z]{1,30});?/,
 
     quoted_attribute_value: $ => choice(
-      seq('\'', repeat($._quoted_attribute_value_inner), '\''),
-      seq('"', repeat($._quoted_attribute_value_inner), '"'),
+      seq('\'', repeat($._single_quoted_attribute_value_inner), '\''),
+      seq('"', repeat($._double_quoted_attribute_value_inner), '"'),
     ),
 
-    _quoted_attribute_value_inner: $ => choice(
+    _single_quoted_attribute_value_inner: $ => choice(
       $.jinja,
-      alias(/[^<>{}"'=]+/, $.attribute_value),
+      alias(/[^{}']+/, $.attribute_value),
+    ),
+
+    _double_quoted_attribute_value_inner: $ => choice(
+      $.jinja,
+      alias(/[^{}"]+/, $.attribute_value),
     ),
 
     text: _ => /[^<>&\s]([^<>{}&]*)?/,

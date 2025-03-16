@@ -399,7 +399,7 @@
               "type": "REPEAT",
               "content": {
                 "type": "SYMBOL",
-                "name": "_quoted_attribute_value_inner"
+                "name": "_single_quoted_attribute_value_inner"
               }
             },
             {
@@ -419,7 +419,7 @@
               "type": "REPEAT",
               "content": {
                 "type": "SYMBOL",
-                "name": "_quoted_attribute_value_inner"
+                "name": "_double_quoted_attribute_value_inner"
               }
             },
             {
@@ -430,7 +430,7 @@
         }
       ]
     },
-    "_quoted_attribute_value_inner": {
+    "_single_quoted_attribute_value_inner": {
       "type": "CHOICE",
       "members": [
         {
@@ -441,7 +441,25 @@
           "type": "ALIAS",
           "content": {
             "type": "PATTERN",
-            "value": "[^<>{}\"'=]+"
+            "value": "[^{}']+"
+          },
+          "named": true,
+          "value": "attribute_value"
+        }
+      ]
+    },
+    "_double_quoted_attribute_value_inner": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "jinja"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[^{}\"]+"
           },
           "named": true,
           "value": "attribute_value"
